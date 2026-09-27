@@ -121,7 +121,11 @@ def main() -> None:
     outputs = PROJECT_ROOT / "m3_work" / "outputs"
     reports = PROJECT_ROOT / "m3_work" / "reports"
     outputs.mkdir(parents=True, exist_ok=True)
-    reports.mkdir(parents=True, exist_ok=True)
+    import joblib
+    model_path = outputs / f"model_{args.model}_{run_name}.joblib"
+    joblib.dump({"model": model, "features": feature_columns, "best_threshold": best["threshold"]}, model_path)
+    print(f"Saved trained model checkpoint to {model_path}", flush=True)
+
     metrics.to_csv(outputs / f"m3_{args.model}_{run_name}_threshold_metrics.csv", index=False)
     validation[["source1_entity_id", "target_entity_id", "label", "probability"]].to_csv(
         outputs / f"m3_{args.model}_{run_name}_validation_scores.csv.gz", index=False, compression="gzip"

@@ -118,23 +118,34 @@ def main() -> None:
     parser.add_argument("--max-source1", type=int, default=None, help="Smoke-test limit in candidate-file order.")
     parser.add_argument("--batch-source1", type=int, default=5_000,
                         help="Number of Source-1 candidate rows to materialize per feature batch.")
-    parser.add_argument("--target-cache", type=Path, default=PROJECT_ROOT / "m3_work" / "outputs" / "candidate_target_cache.sqlite")
-    parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "m3_work" / "outputs" / "pair_features_100k.csv.gz")
+    parser.add_argument(
+        "--candidate-file",
+        type=Path,
+        default=PROJECT_ROOT / "m3_work" / "outputs" / "candidate_pairs_m4_union_100k.tsv",
+        help="Input candidate pairs TSV file",
+    )
+    parser.add_argument("--target-cache", type=Path, default=PROJECT_ROOT / "m3_work" / "outputs" / "candidate_target_cache_m4.sqlite")
+    parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "m3_work" / "outputs" / "pair_features_m4_union_100k.csv.gz")
     args = parser.parse_args()
 
     dataset = PROJECT_ROOT / "dataset" / "train"
-    candidate_path = PROJECT_ROOT / "m2_work" / "outputs" / "candidate_pairs.tsv"
-    print("Loading frozen candidate file ...", flush=True)
+    candidate_path = args.candidate_file
+    print(f"Loading candidate file from {candidate_path} ...", flush=True)
     candidates = pd.read_csv(candidate_path, sep="\t", dtype=str, keep_default_na=False)
     if args.max_source1 is not None:
         candidates = candidates.iloc[:args.max_source1].copy()
 
     source_ids = set(candidates["source1_entity_id"])
-    print("Loading Source-1 records ...", flush=True)
-    # The frozen M2 candidate file is the first 100K rows in source-file order.
-    s1 = pd.read_csv(dataset / "train_source1.tsv", sep="\t", dtype=str, keep_default_na=False,
-                     nrows=(args.max_source1 or len(candidates)))
-    s1 = normalize_entities(s1[s1["entity_id"].isin(source_ids)]).rename(columns={"entity_id": "source1_entity_id"})
+    print(f"Loading matching Source-1 records ({len(source_ids):,} entities) ...", flush=True)
+    s1_chunks = []
+    cols = ["entity_id", "business_name", "business_address", "country"]
+    for chunk in pd.read_csv(dataset / "train_source1.tsv", sep="\t", dtype=str, keep_default_na=False, usecols=cols, chunksize=300_000):
+        matched = chunk[chunk["entity_id"].isin(source_ids)]
+        if not matched.empty:
+            s1_chunks.append(matched)
+
+    s1 = pd.concat(s1_chunks, ignore_index=True)
+    s1 = normalize_entities(s1).rename(columns={"entity_id": "source1_entity_id"})
     print("Streaming candidate targets from Sources 2 and 3 ...", flush=True)
     target_ids = {target for values in candidates["candidate_entity_ids"].map(parse_ids) for target in values}
     build_target_cache(dataset, target_ids, args.target_cache)
