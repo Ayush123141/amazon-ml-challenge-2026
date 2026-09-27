@@ -1,0 +1,12 @@
+# Ignore large datasets
+dataset/
+*.tsv
+*.csv
+*.csv.gz
+*.sqlite
+__pycache__/
+*.pyc
+.DS_Store
+.ipynb_checkpoints/
+.system_generated/
+*.log

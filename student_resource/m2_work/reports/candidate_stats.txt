@@ -1,0 +1,36 @@
+
+M2 CANDIDATE PAIRS REPORT
+=========================
+
+Configuration
+-------------
+MAX_S1_ROWS  : 100000
+MAX_TOKEN_DF : 50
+
+Input
+-----
+S1 rows processed : 100,000
+S2 rows           : 5,034,616
+S3 rows           : 5,285,603
+
+Candidate statistics
+--------------------
+Total candidate links : 348,626
+Mean candidates/S1    : 3.4863
+Median candidates/S1  : 0.0000
+P95                   : 30.0000
+P99                   : 47.0000
+Maximum               : 95
+
+Zero-candidate S1
+-----------------
+Count                 : 85,950
+Percentage            : 85.9500%
+
+Runtime
+-------
+Seconds               : 195.28
+
+Output
+------
+C:\Amazon ML Challenge\student_resource\m2_work\outputs\candidate_pairs.tsv

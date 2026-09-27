@@ -1,0 +1,26 @@
+
+M2 CANDIDATE PAIRS REPORT
+=========================
+
+Configuration
+-------------
+DF threshold       : 50
+S1 rows processed  : 100,000
+
+Candidate statistics
+--------------------
+Total candidate links : 824,934
+Mean candidates/S1    : 8.2493
+Median candidates/S1  : 0.0000
+P95                   : 44.0000
+P99                   : 63.0000
+Maximum               : 177
+
+Zero-candidate S1
+-----------------
+Count                 : 64,545
+Percentage            : 64.5450%
+
+Output
+------
+C:\Amazon ML Challenge\student_resource\m2_work\outputs\candidate_pairs.tsv

@@ -1,0 +1,22 @@
+{
+  "experiment": "M2_STAGE1_BLOCKING_100K",
+  "random_seed": 42,
+  "s1_sample_size": 100000,
+  "batch_size": 5000,
+  "total_true_matches": 345670,
+  "retrieved_true_matches": 151284,
+  "blocking_recall": 0.43765441027569646,
+  "entity_level_complete_recall": 0.1101498139253793,
+  "total_candidate_pairs": 1231347,
+  "mean_candidates": 12.31347,
+  "median_candidates": 2.0,
+  "p95_candidates": 70.0,
+  "max_candidates": 460,
+  "zero_candidate_count": 13090,
+  "zero_candidate_rate": 0.1309,
+  "average_candidate_reduction_ratio": 0.9999988068596218,
+  "runtime_seconds": 1487.6730613,
+  "total_s2_rows": 5034616,
+  "total_s3_rows": 5285603,
+  "total_possible_candidates": 10320219
+}
